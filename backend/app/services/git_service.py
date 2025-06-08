@@ -19,12 +19,18 @@ class GitService:
         Get all commits after the specified commit that modified the given source files.
         """
         try:
+            print(f"Getting commits after: {current_commit}")
+            print(f"Source files: {source_files}")
+            print(f"Repository URL: {repository_url}")
+            
             if repository_url:
                 # Clone repository to temp directory
                 self.temp_dir = tempfile.mkdtemp()
+                print(f"Cloning repository to: {self.temp_dir}")
                 self.repo = Repo.clone_from(repository_url, self.temp_dir)
             else:
                 # Use current directory
+                print(f"Using current directory: {os.getcwd()}")
                 self.repo = Repo(os.getcwd())
 
             # Get all commits after the specified commit
@@ -33,11 +39,13 @@ class GitService:
             for commit in self.repo.iter_commits():
                 if not found_current:
                     if commit.hexsha == current_commit:
+                        print(f"Found current commit: {current_commit}")
                         found_current = True
                     continue
                 
                 # Check if commit modified any of the source files
                 if any(file in commit.stats.files for file in source_files):
+                    print(f"Found relevant commit: {commit.hexsha}")
                     commits.append({
                         'hash': commit.hexsha,
                         'message': commit.message,
@@ -47,9 +55,11 @@ class GitService:
                         'diff': self._get_commit_diff(commit, source_files)
                     })
 
+            print(f"Total commits found: {len(commits)}")
             return commits
 
         except Exception as e:
+            print(f"Error getting commits: {str(e)}")
             raise Exception(f"Error getting commits: {str(e)}")
         finally:
             self._cleanup()

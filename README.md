@@ -52,6 +52,11 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
+4. Run the development server in debug mode:
+```bash
+uvicorn app.main:app --reload --log-level debug
+```
+
 ### Frontend
 
 1. Install dependencies:
