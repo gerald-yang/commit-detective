@@ -23,6 +23,7 @@ function App() {
     sourceFiles: '',
     currentCommit: '',
     repositoryUrl: '',
+    localDirectory: '',
     saveOnly: false,
   });
   const [loading, setLoading] = useState(false);
@@ -49,6 +50,7 @@ function App() {
         source_files: formData.sourceFiles.split(',').map((file) => file.trim()),
         current_commit: formData.currentCommit,
         repository_url: formData.repositoryUrl || undefined,
+        local_directory: formData.localDirectory || undefined,
         save_only: formData.saveOnly,
       });
 
@@ -110,6 +112,16 @@ function App() {
             onChange={handleInputChange}
             margin="normal"
             helperText="Leave empty to use current directory"
+          />
+
+          <TextField
+            fullWidth
+            label="Local Directory (optional)"
+            name="localDirectory"
+            value={formData.localDirectory}
+            onChange={handleInputChange}
+            margin="normal"
+            helperText="Specify a local directory to save/use the repository"
           />
 
           <FormControlLabel

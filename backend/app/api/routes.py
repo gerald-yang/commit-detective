@@ -15,6 +15,7 @@ class IssueRequest(BaseModel):
     source_files: List[str]
     current_commit: str
     repository_url: Optional[str] = None
+    local_directory: Optional[str] = None
     save_only: bool = False
 
 class CommitAnalysis(BaseModel):
@@ -30,7 +31,8 @@ async def analyze_issue(request: IssueRequest):
         commits = await git_service.get_commits_after(
             request.current_commit,
             request.source_files,
-            request.repository_url
+            request.repository_url,
+            request.local_directory
         )
         
         if request.save_only:
@@ -44,15 +46,16 @@ async def analyze_issue(request: IssueRequest):
                 'message': commit['message'],
                 'author': commit['author'],
                 'date': commit['date'],
-                'files': commit['files']
+                'files': commit['files'],
+                'diff': commit['diff']
             } for commit in commits]
             
             with open(filename, 'w') as f:
                 json.dump(commits_to_save, f, indent=2)
             
             return [{
-                'commit_hash': commit['hash'],
-                'commit_message': commit['message'],
+                'commit_hash': "0",
+                'commit_message': "Saved commits to file only",
                 'relevance_score': 1.0,
                 'explanation': f"Saved {len(commits)} commits to {filename}"
             }]
