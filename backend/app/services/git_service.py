@@ -65,7 +65,6 @@ class GitService:
                         'files': list(commit.stats.files.keys()),
                         'diff': self._get_commit_diff(commit, source_files)
                     })
-                    print(f"diff: {self._get_commit_diff(commit, source_files)}")
 
             print(f"Total commits found: {len(commits)}")
             return commits
