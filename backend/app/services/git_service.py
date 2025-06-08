@@ -29,9 +29,12 @@ class GitService:
 
             # Get all commits after the specified commit
             commits = []
+            found_current = False
             for commit in self.repo.iter_commits():
-                if commit.hexsha == current_commit:
-                    break
+                if not found_current:
+                    if commit.hexsha == current_commit:
+                        found_current = True
+                    continue
                 
                 # Check if commit modified any of the source files
                 if any(file in commit.stats.files for file in source_files):
